@@ -27,20 +27,67 @@ const ProductCard = ({ product, onAddToCart }) => {
   );
 };
 
-// Landing Page
-const LandingPage = ({ onNavigate }) => {
+// Header Component
+const Header = ({ onNavigate, cart, currentPage }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100">
-      <div className="container mx-auto px-4 py-16">
+    <header className="bg-white shadow-md sticky top-0 z-10">
+      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-3 cursor-pointer" onClick={() => onNavigate('landing')}>
+          <Flower2 size={40} className="text-pink-500" />
+          <h1 className="text-2xl font-bold text-gray-800">Blossom Haven</h1>
+        </div>
+        <nav className="flex items-center gap-4">
+          <button
+            onClick={() => onNavigate('landing')}
+            className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
+              currentPage === 'landing' ? 'bg-pink-100 text-pink-700' : 'hover:bg-gray-100'
+            }`}
+          >
+            Home
+          </button>
+          <button
+            onClick={() => onNavigate('products')}
+            className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
+              currentPage === 'products' ? 'bg-pink-100 text-pink-700' : 'hover:bg-gray-100'
+            }`}
+          >
+            Products
+          </button>
+          <button
+            onClick={() => onNavigate('cart')}
+            className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+          >
+            <ShoppingCart size={24} />
+            <span className="font-semibold">Cart ({cart.length})</span>
+          </button>
+        </nav>
+      </div>
+    </header>
+  );
+};
+
+// Landing Page
+const LandingPage = ({ onNavigate, cart }) => {
+  return (
+    <div className="min-h-screen">
+      <Header onNavigate={onNavigate} cart={cart} currentPage="landing" />
+      <div 
+        className="min-h-screen bg-cover bg-center bg-no-repeat relative"
+        style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=1920&q=80')"
+        }}
+      >
+        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div className="container mx-auto px-4 py-16 relative z-10">
         <div className="text-center mb-16">
           <div className="flex justify-center mb-6">
-            <Flower2 size={80} className="text-pink-500" />
+            <Flower2 size={80} className="text-white drop-shadow-lg" />
           </div>
-          <h1 className="text-6xl font-bold text-gray-800 mb-4">Blossom Haven</h1>
-          <p className="text-2xl text-gray-600">Where Every Bloom Tells a Story</p>
+          <h1 className="text-6xl font-bold text-white mb-4 drop-shadow-lg">Blossom Haven</h1>
+          <p className="text-2xl text-white drop-shadow-lg">Where Every Bloom Tells a Story</p>
         </div>
 
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-12 mb-12">
+        <div className="max-w-3xl mx-auto bg-white bg-opacity-95 rounded-2xl shadow-2xl p-12 mb-12">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">About Us</h2>
           <p className="text-lg text-gray-600 leading-relaxed mb-6">
             Welcome to Blossom Haven, your premier destination for exquisite flowers and botanical arrangements. 
@@ -54,7 +101,7 @@ const LandingPage = ({ onNavigate }) => {
           </p>
           <button
             onClick={() => onNavigate('products')}
-            className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 flex items-center gap-3 mx-auto cursor-pointer"
+            className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 flex items-center gap-3 mx-auto"
           >
             Explore Our Collection
             <ArrowRight size={24} />
@@ -62,61 +109,101 @@ const LandingPage = ({ onNavigate }) => {
         </div>
       </div>
     </div>
+    </div>
   );
 };
 
 // Products Page
 const ProductsPage = ({ onNavigate, cart, onAddToCart }) => {
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  
   const products = [
-    { id: 1, name: "Red Roses Bouquet", price: 45, image: "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=400", description: "Classic dozen red roses, perfect for expressing love and passion" },
-    { id: 2, name: "Sunflower Delight", price: 35, image: "https://images.unsplash.com/photo-1597848212624-e530bb0e7d03?w=400", description: "Bright and cheerful sunflowers to brighten any room" },
-    { id: 3, name: "Lavender Dreams", price: 30, image: "https://images.unsplash.com/photo-1611518041143-8f1f5e3cfb4f?w=400", description: "Fragrant lavender bouquet for relaxation and serenity" },
-    { id: 4, name: "Tulip Garden", price: 40, image: "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=400", description: "Mixed tulips in vibrant spring colors" },
-    { id: 5, name: "White Lilies", price: 50, image: "https://images.unsplash.com/photo-1565011523534-747a8601f10a?w=400", description: "Elegant white lilies symbolizing purity and grace" },
-    { id: 6, name: "Orchid Paradise", price: 65, image: "https://images.unsplash.com/photo-1583437176361-5acb2c6b8b15?w=400", description: "Exotic orchids for the sophisticated plant lover" },
-    { id: 7, name: "Peony Perfection", price: 55, image: "https://images.unsplash.com/photo-1591886960571-74d43a9d4166?w=400", description: "Lush peonies in soft pink shades" },
-    { id: 8, name: "Carnation Mix", price: 28, image: "https://images.unsplash.com/photo-1562690868-60bbe7293e94?w=400", description: "Colorful carnations for lasting beauty" },
-    { id: 9, name: "Hydrangea Heaven", price: 48, image: "https://images.unsplash.com/photo-1558879696-eceb8b47e910?w=400", description: "Full blooming hydrangeas in blue and purple" },
-    { id: 10, name: "Daisy Chain", price: 25, image: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400", description: "Fresh white daisies for simple elegance" },
-    { id: 11, name: "Gerbera Joy", price: 32, image: "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=400", description: "Vibrant gerbera daisies in rainbow colors" },
-    { id: 12, name: "Iris Elegance", price: 42, image: "https://images.unsplash.com/photo-1599493758267-c6c884c7071f?w=400", description: "Graceful purple iris blooms" },
-    { id: 13, name: "Magnolia Magic", price: 58, image: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400", description: "Stunning magnolia flowers with sweet fragrance" },
-    { id: 14, name: "Calla Lily Charm", price: 52, image: "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=400", description: "Sophisticated calla lilies in pristine white" },
-    { id: 15, name: "Ranunculus Romance", price: 46, image: "https://images.unsplash.com/photo-1597848212624-e530bb0e7d03?w=400", description: "Delicate ranunculus with layered petals" },
-    { id: 16, name: "Anemone Artistry", price: 38, image: "https://images.unsplash.com/photo-1611518041143-8f1f5e3cfb4f?w=400", description: "Striking anemones with dark centers" },
-    { id: 17, name: "Freesia Fantasy", price: 34, image: "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=400", description: "Fragrant freesias in pastel hues" },
-    { id: 18, name: "Protea Power", price: 68, image: "https://images.unsplash.com/photo-1565011523534-747a8601f10a?w=400", description: "Exotic protea flowers for unique arrangements" },
-    { id: 19, name: "Sweet Pea Bouquet", price: 29, image: "https://images.unsplash.com/photo-1583437176361-5acb2c6b8b15?w=400", description: "Delicate sweet peas with intoxicating scent" },
-    { id: 20, name: "Zinnia Zest", price: 26, image: "https://images.unsplash.com/photo-1591886960571-74d43a9d4166?w=400", description: "Bold zinnias in hot summer colors" },
-    { id: 21, name: "Dahlia Delight", price: 54, image: "https://images.unsplash.com/photo-1562690868-60bbe7293e94?w=400", description: "Dramatic dahlias with intricate petals" },
-    { id: 22, name: "Cosmos Collection", price: 31, image: "https://images.unsplash.com/photo-1558879696-eceb8b47e910?w=400", description: "Airy cosmos flowers for a wildflower feel" },
-    { id: 23, name: "Gardenia Grace", price: 62, image: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400", description: "Luxurious gardenias with creamy petals" },
-    { id: 24, name: "Snapdragon Surprise", price: 33, image: "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=400", description: "Tall snapdragons in mixed colors" },
-    { id: 25, name: "Marigold Meadow", price: 24, image: "https://images.unsplash.com/photo-1599493758267-c6c884c7071f?w=400", description: "Cheerful orange and yellow marigolds" },
+    { id: 1, name: "Red Roses Bouquet", price: 45, category: "roses", image: "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=400", description: "Classic dozen red roses, perfect for expressing love and passion" },
+    { id: 2, name: "Sunflower Delight", price: 35, category: "seasonal", image: "https://images.unsplash.com/photo-1597848212624-e530bb0e7d03?w=400", description: "Bright and cheerful sunflowers to brighten any room" },
+    { id: 3, name: "Lavender Dreams", price: 30, category: "seasonal", image: "https://images.unsplash.com/photo-1611518041143-8f1f5e3cfb4f?w=400", description: "Fragrant lavender bouquet for relaxation and serenity" },
+    { id: 4, name: "Tulip Garden", price: 40, category: "seasonal", image: "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=400", description: "Mixed tulips in vibrant spring colors" },
+    { id: 5, name: "White Lilies", price: 50, category: "exotic", image: "https://images.unsplash.com/photo-1565011523534-747a8601f10a?w=400", description: "Elegant white lilies symbolizing purity and grace" },
+    { id: 6, name: "Orchid Paradise", price: 65, category: "exotic", image: "https://images.unsplash.com/photo-1583437176361-5acb2c6b8b15?w=400", description: "Exotic orchids for the sophisticated plant lover" },
+    { id: 7, name: "Peony Perfection", price: 55, category: "seasonal", image: "https://images.unsplash.com/photo-1591886960571-74d43a9d4166?w=400", description: "Lush peonies in soft pink shades" },
+    { id: 8, name: "Carnation Mix", price: 28, category: "roses", image: "https://images.unsplash.com/photo-1562690868-60bbe7293e94?w=400", description: "Colorful carnations for lasting beauty" },
+    { id: 9, name: "Hydrangea Heaven", price: 48, category: "seasonal", image: "https://images.unsplash.com/photo-1558879696-eceb8b47e910?w=400", description: "Full blooming hydrangeas in blue and purple" },
+    { id: 10, name: "Daisy Chain", price: 25, category: "seasonal", image: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400", description: "Fresh white daisies for simple elegance" },
+    { id: 11, name: "Gerbera Joy", price: 32, category: "seasonal", image: "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=400", description: "Vibrant gerbera daisies in rainbow colors" },
+    { id: 12, name: "Iris Elegance", price: 42, category: "exotic", image: "https://images.unsplash.com/photo-1599493758267-c6c884c7071f?w=400", description: "Graceful purple iris blooms" },
+    { id: 13, name: "Magnolia Magic", price: 58, category: "exotic", image: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400", description: "Stunning magnolia flowers with sweet fragrance" },
+    { id: 14, name: "Calla Lily Charm", price: 52, category: "exotic", image: "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=400", description: "Sophisticated calla lilies in pristine white" },
+    { id: 15, name: "Ranunculus Romance", price: 46, category: "roses", image: "https://images.unsplash.com/photo-1597848212624-e530bb0e7d03?w=400", description: "Delicate ranunculus with layered petals" },
+    { id: 16, name: "Anemone Artistry", price: 38, category: "seasonal", image: "https://images.unsplash.com/photo-1611518041143-8f1f5e3cfb4f?w=400", description: "Striking anemones with dark centers" },
+    { id: 17, name: "Freesia Fantasy", price: 34, category: "seasonal", image: "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=400", description: "Fragrant freesias in pastel hues" },
+    { id: 18, name: "Protea Power", price: 68, category: "exotic", image: "https://images.unsplash.com/photo-1565011523534-747a8601f10a?w=400", description: "Exotic protea flowers for unique arrangements" },
+    { id: 19, name: "Sweet Pea Bouquet", price: 29, category: "seasonal", image: "https://images.unsplash.com/photo-1583437176361-5acb2c6b8b15?w=400", description: "Delicate sweet peas with intoxicating scent" },
+    { id: 20, name: "Zinnia Zest", price: 26, category: "seasonal", image: "https://images.unsplash.com/photo-1591886960571-74d43a9d4166?w=400", description: "Bold zinnias in hot summer colors" },
+    { id: 21, name: "Dahlia Delight", price: 54, category: "exotic", image: "https://images.unsplash.com/photo-1562690868-60bbe7293e94?w=400", description: "Dramatic dahlias with intricate petals" },
+    { id: 22, name: "Cosmos Collection", price: 31, category: "seasonal", image: "https://images.unsplash.com/photo-1558879696-eceb8b47e910?w=400", description: "Airy cosmos flowers for a wildflower feel" },
+    { id: 23, name: "Gardenia Grace", price: 62, category: "exotic", image: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400", description: "Luxurious gardenias with creamy petals" },
+    { id: 24, name: "Snapdragon Surprise", price: 33, category: "seasonal", image: "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=400", description: "Tall snapdragons in mixed colors" },
+    { id: 25, name: "Marigold Meadow", price: 24, category: "seasonal", image: "https://images.unsplash.com/photo-1599493758267-c6c884c7071f?w=400", description: "Cheerful orange and yellow marigolds" },
+    { id: 26, name: "Pink Roses Bouquet", price: 45, category: "roses", image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400", description: "Delicate pink roses for tender moments" },
+    { id: 27, name: "Yellow Roses Bundle", price: 42, category: "roses", image: "https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=400", description: "Bright yellow roses symbolizing friendship" },
+    { id: 28, name: "White Roses Elegance", price: 48, category: "roses", image: "https://images.unsplash.com/photo-1582794543462-d86c5f6e0c7d?w=400", description: "Pure white roses for timeless beauty" },
   ];
+
+  const filteredProducts = selectedCategory === 'all' 
+    ? products 
+    : products.filter(p => p.category === selectedCategory);
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-md sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Flower2 size={40} className="text-pink-500" />
-            <h1 className="text-2xl font-bold text-gray-800">Blossom Haven</h1>
-          </div>
-          <button
-            onClick={() => onNavigate('cart')}
-            className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg transition-colors duration-200"
-          >
-            <ShoppingCart size={24} />
-            <span className="font-semibold">Cart ({cart.length})</span>
-          </button>
-        </div>
-      </header>
+      <Header onNavigate={onNavigate} cart={cart} currentPage="products" />
 
       <div className="container mx-auto px-4 py-8">
-        <h2 className="text-3xl font-bold text-gray-800 mb-8">Our Flowers Collection</h2>
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-3xl font-bold text-gray-800">Our Flowers Collection</h2>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setSelectedCategory('all')}
+              className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
+                selectedCategory === 'all' 
+                  ? 'bg-pink-500 text-white' 
+                  : 'bg-white text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              All Flowers
+            </button>
+            <button
+              onClick={() => setSelectedCategory('roses')}
+              className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
+                selectedCategory === 'roses' 
+                  ? 'bg-pink-500 text-white' 
+                  : 'bg-white text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              Roses
+            </button>
+            <button
+              onClick={() => setSelectedCategory('exotic')}
+              className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
+                selectedCategory === 'exotic' 
+                  ? 'bg-pink-500 text-white' 
+                  : 'bg-white text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              Exotic
+            </button>
+            <button
+              onClick={() => setSelectedCategory('seasonal')}
+              className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
+                selectedCategory === 'seasonal' 
+                  ? 'bg-pink-500 text-white' 
+                  : 'bg-white text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              Seasonal
+            </button>
+          </div>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map(product => (
+          {filteredProducts.map(product => (
             <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} />
           ))}
         </div>
@@ -131,20 +218,7 @@ const CartPage = ({ onNavigate, cart, onRemoveFromCart }) => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-md">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Flower2 size={40} className="text-pink-500" />
-            <h1 className="text-2xl font-bold text-gray-800">Blossom Haven</h1>
-          </div>
-          <button
-            onClick={() => onNavigate('products')}
-            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 cursor-pointer"
-          >
-            Continue Shopping
-          </button>
-        </div>
-      </header>
+      <Header onNavigate={onNavigate} cart={cart} currentPage="cart" />
 
       <div className="container mx-auto px-4 py-8">
         <h2 className="text-3xl font-bold text-gray-800 mb-8">Shopping Cart</h2>
@@ -155,7 +229,7 @@ const CartPage = ({ onNavigate, cart, onRemoveFromCart }) => {
             <p className="text-xl text-gray-600 mb-6">Your cart is empty</p>
             <button
               onClick={() => onNavigate('products')}
-              className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-lg transition-colors duration-200 cursor-pointer"
+              className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-lg transition-colors duration-200"
             >
               Start Shopping
             </button>
@@ -231,7 +305,7 @@ const App = () => {
 
   return (
     <div>
-      {currentPage === 'landing' && <LandingPage onNavigate={setCurrentPage} />}
+      {currentPage === 'landing' && <LandingPage onNavigate={setCurrentPage} cart={cart} />}
       {currentPage === 'products' && <ProductsPage onNavigate={setCurrentPage} cart={cart} onAddToCart={handleAddToCart} />}
       {currentPage === 'cart' && <CartPage onNavigate={setCurrentPage} cart={cart} onRemoveFromCart={handleRemoveFromCart} />}
     </div>
